@@ -15,6 +15,7 @@ using System.Collections;
 using System.Data;
 using System.Data.SqlClient;
 using static System.Net.WebRequestMethods;
+using System.Data.Common;
 
 namespace Practica2doParcial
 {
@@ -41,7 +42,8 @@ namespace Practica2doParcial
                     "\n 4. Mantenimiento Telefono" +
                     "\n 5.Exportar todas las tablas en CSV " +
                     "\n 6. Reporte Llamadas" +
-                    "\n 7. Salir " +
+                    "\n 7. Importar Telefono csv" +
+                    "\n 8. Salir " +
                     "\n"
                     );
 
@@ -69,36 +71,44 @@ namespace Practica2doParcial
                                 switch (opcion)
                                 {
                                     case "1":
-                                        string url = "https://localhost:7177/api/Clientes";
-                                        HttpClient Client = new HttpClient();
+                                                try
+                                                {
+                                                    string url = "https://localhost:7177/api/Clientes";
+                                                    HttpClient Client = new HttpClient();
 
-                                        var httpResponse = await Client.GetAsync(url);
+                                                    var httpResponse = await Client.GetAsync(url);
 
-                                        if (httpResponse.IsSuccessStatusCode)
-                                        {
-                                            var content = await httpResponse.Content.ReadAsStringAsync();
-                                            var jsonSerializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-                                            List<Models.Cliente> clientes = System.Text.Json.JsonSerializer.Deserialize<List<Models.Cliente>>(content, jsonSerializerOptions);
+                                                    if (httpResponse.IsSuccessStatusCode)
+                                                    {
+                                                        var content = await httpResponse.Content.ReadAsStringAsync();
+                                                        var jsonSerializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                                                        List<Models.Cliente> clientes = System.Text.Json.JsonSerializer.Deserialize<List<Models.Cliente>>(content, jsonSerializerOptions);
 
-                                            Console.WriteLine($"IDCliente    Nombre        Apellido       fecha de nacimiento");
+                                                        Console.WriteLine($"IDCliente    Nombre        Apellido       fecha de nacimiento");
 
-                                            foreach (var X in clientes)
+                                                        foreach (var X in clientes)
 
-                                                Console.WriteLine($" {X.IdCliente}         {X.Nombre}         {X.Apellido}          {X.FechaNacimiento}");
+                                                            Console.WriteLine($" {X.IdCliente}         {X.Nombre}         {X.Apellido}          {X.FechaNacimiento}");
 
 
-                                            Console.ReadLine();
-                                        }
-
+                                                        Console.ReadLine();
+                                                    }
+                                                }
+                                                catch
+                                                {
+                                                    Console.WriteLine("Ha ocurrido un error,Revise la connecion con la api");
+                                                    Console.Read();
+                                                }
 
 
                                         break;
 
                                     case "2":
+                                                
                                         string url1 = "https://localhost:7177/api/Clientes/Post";
                                         var Client1 = new HttpClient();
                                         var nombre = "";
-                                        Console.WriteLine("escriba el telefono del cliente");
+                                        Console.WriteLine("escriba el nombre del cliente");
                                         nombre = Console.ReadLine();
                                         var apellido = "";
                                         Console.WriteLine("escriba el apellido del cliente");
@@ -118,49 +128,61 @@ namespace Practica2doParcial
 
 
 
+                                                try
+                                                {
+                                                    var data1 = JsonSerializer.Serialize<Cliente>(cliente);
+                                                    HttpContent content1 = new StringContent(data1, System.Text.Encoding.UTF8, "application/json");
 
-                                        var data1 = JsonSerializer.Serialize<Cliente>(cliente);
-                                        HttpContent content1 = new StringContent(data1, System.Text.Encoding.UTF8, "application/json");
+                                                    var httpResponse1 = await Client1.PostAsync(url1, content1);
 
-                                        var httpResponse1 = await Client1.PostAsync(url1, content1);
-
-                                        if (httpResponse1.IsSuccessStatusCode)
-                                        {
-                                            var result = await httpResponse1.Content.ReadAsStringAsync();
-                                            var postResult = JsonSerializer.Deserialize<Post>(result);
-                                            Console.WriteLine("Cliente agregado");
-                                            Console.ReadLine();
-                                        }
-
+                                                    if (httpResponse1.IsSuccessStatusCode)
+                                                    {
+                                                        var result = await httpResponse1.Content.ReadAsStringAsync();
+                                                        var postResult = JsonSerializer.Deserialize<Post>(result);
+                                                        Console.WriteLine("Cliente agregado");
+                                                        Console.ReadLine();
+                                                    }
+                                                }
+                                                catch
+                                                {
+                                                    Console.WriteLine("Ha ocurrido un error");
+                                                    Console.Read();
+                                                }
 
                                         break;
                                     case "3":
 
 
                                         Console.WriteLine("Escriba el id del cliente que quiere eliminar");
+                                                try
+                                                {
+                                                    var id = Console.ReadLine();
 
-                                        var id = Console.ReadLine();
-
-                                        string url2 = $"https://localhost:7177/api/Clientes?id={id}";
-                                        var Client2 = new HttpClient();
-
-
-
+                                                    string url2 = $"https://localhost:7177/api/Clientes?id={id}";
+                                                    var Client2 = new HttpClient();
 
 
-                                        ///var data2 = JsonSerializer.Serialize<Cliente>(cliente2);
-                                        //HttpContent content2 = new StringContent(data2, System.Text.Encoding.UTF8, "application/json");
 
-                                        var httpResponse2 = await Client2.DeleteAsync(url2);
 
-                                        if (httpResponse2.IsSuccessStatusCode)
-                                        {
-                                            var result = await httpResponse2.Content.ReadAsStringAsync();
-                                            // var postResult = JsonSerializer.Deserialize<Post>(result);
-                                            Console.WriteLine("Cliente eliminado");
-                                            Console.ReadLine();
-                                        }
 
+                                                    ///var data2 = JsonSerializer.Serialize<Cliente>(cliente2);
+                                                    //HttpContent content2 = new StringContent(data2, System.Text.Encoding.UTF8, "application/json");
+
+                                                    var httpResponse2 = await Client2.DeleteAsync(url2);
+
+                                                    if (httpResponse2.IsSuccessStatusCode)
+                                                    {
+                                                        var result = await httpResponse2.Content.ReadAsStringAsync();
+                                                        // var postResult = JsonSerializer.Deserialize<Post>(result);
+                                                        Console.WriteLine("Cliente eliminado");
+                                                        Console.ReadLine();
+                                                    }
+                                                }
+                                                catch
+                                                {
+                                                    Console.WriteLine("Ha ocurrido un error");
+                                                    Console.Read();
+                                                }
 
                                         break;
 
@@ -193,21 +215,27 @@ namespace Practica2doParcial
 
 
 
+                                                try
+                                                {
+                                                    var data4 = JsonSerializer.Serialize<Cliente>(cliente4);
+                                                    HttpContent content4 = new StringContent(data4, System.Text.Encoding.UTF8, "application/json");
 
-                                        var data4 = JsonSerializer.Serialize<Cliente>(cliente4);
-                                        HttpContent content4 = new StringContent(data4, System.Text.Encoding.UTF8, "application/json");
+                                                    var httpResponse4 = await Client4.PutAsync(url4, content4);
 
-                                        var httpResponse4 = await Client4.PutAsync(url4, content4);
+                                                    if (httpResponse4.IsSuccessStatusCode)
+                                                    {
+                                                        var result = await httpResponse4.Content.ReadAsStringAsync();
+                                                        var postResult = JsonSerializer.Deserialize<Post>(result);
+                                                        Console.WriteLine("Cliente Editado");
+                                                        Console.ReadLine();
+                                                    }
 
-                                        if (httpResponse4.IsSuccessStatusCode)
-                                        {
-                                            var result = await httpResponse4.Content.ReadAsStringAsync();
-                                            var postResult = JsonSerializer.Deserialize<Post>(result);
-                                            Console.WriteLine("Cliente Editado");
-                                            Console.ReadLine();
-                                        }
-
-
+                                                }
+                                                catch
+                                                {
+                                                    Console.WriteLine("Ha ocurrido un error");
+                                                    Console.Read();
+                                                }
 
                                         break;
 
@@ -255,30 +283,37 @@ namespace Practica2doParcial
                             switch (opcion)
                             {
                                 case "1":
-                                    string url = "https://localhost:7177/api/Llamadas";
-                                    HttpClient Client = new HttpClient();
+                                            try
+                                            {
+                                                string url = "https://localhost:7177/api/Llamadas";
+                                                HttpClient Client = new HttpClient();
 
-                                    var httpResponse = await Client.GetAsync(url);
+                                                var httpResponse = await Client.GetAsync(url);
 
-                                    if (httpResponse.IsSuccessStatusCode)
-                                    {
-                                        var content = await httpResponse.Content.ReadAsStringAsync();
-                                        var jsonSerializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
-                                        List<Models.Llamada> clientes = System.Text.Json.JsonSerializer.Deserialize<List<Models.Llamada>>(content, jsonSerializerOptions);
+                                                if (httpResponse.IsSuccessStatusCode)
+                                                {
+                                                    var content = await httpResponse.Content.ReadAsStringAsync();
+                                                    var jsonSerializerOptions = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+                                                    List<Models.Llamada> clientes = System.Text.Json.JsonSerializer.Deserialize<List<Models.Llamada>>(content, jsonSerializerOptions);
 
-                                        Console.WriteLine($"Cod         Telefono                Fecha                Duracion");
+                                                    Console.WriteLine($"Cod         Telefono                Fecha                Duracion");
 
-                                        foreach (var X in clientes)
+                                                    foreach (var X in clientes)
 
-                                            Console.WriteLine($" {X.CodLlamada}         {X.Telefono}         {X.Fecha}          {X.Duracion} Min");
-
-
-                                        Console.ReadLine();
-                                    }
+                                                        Console.WriteLine($" {X.CodLlamada}         {X.Telefono}         {X.Fecha}          {X.Duracion} Min");
 
 
+                                                    Console.ReadLine();
+                                                }
+                                            }
+                                            catch
+                                            {
+                                                Console.WriteLine("Ha ocurrido un error,Revise la connecion con la api");
+                                                Console.Read();
+                                            }
 
-                                    break;
+
+                                            break;
 
                                 case "2":
                                     string url1 = "https://localhost:7177/api/Llamadas/Post";
@@ -288,7 +323,7 @@ namespace Practica2doParcial
                                     telefono = Console.ReadLine();
                                     var duracion = "";
                                     var fecha = "";
-                                    Console.WriteLine("escriba la fecha de la llamada yyyy/mm/dd");
+                                    Console.WriteLine("escriba la fecha de la llamada de la sigiente forma  May 24 2019 12:00AM");
                                     fecha = Console.ReadLine();
                                     Console.WriteLine("escriba la duracion de la llamada en minutos");
                                     duracion = Console.ReadLine();
@@ -304,50 +339,57 @@ namespace Practica2doParcial
                                     };
 
 
+                                            try
+                                            {
 
+                                                var data1 = JsonSerializer.Serialize<Llamada>(llamada);
+                                                HttpContent content1 = new StringContent(data1, System.Text.Encoding.UTF8, "application/json");
 
-                                    var data1 = JsonSerializer.Serialize<Llamada>(llamada); 
-                                    HttpContent content1 = new StringContent(data1, System.Text.Encoding.UTF8, "application/json");
+                                                var httpResponse1 = await Client1.PostAsync(url1, content1);
 
-                                    var httpResponse1 = await Client1.PostAsync(url1, content1);
-
-                                    if (httpResponse1.IsSuccessStatusCode)
-                                    {
-                                        var result = await httpResponse1.Content.ReadAsStringAsync();
-                                        var postResult = JsonSerializer.Deserialize<Post>(result);
-                                        Console.WriteLine("Llamada agregada");
-                                        Console.ReadLine();
-                                    }
-
+                                                if (httpResponse1.IsSuccessStatusCode)
+                                                {
+                                                    var result = await httpResponse1.Content.ReadAsStringAsync();
+                                                    var postResult = JsonSerializer.Deserialize<Post>(result);
+                                                    Console.WriteLine("Llamada agregada");
+                                                    Console.ReadLine();
+                                                }
+                                            }
+                                            catch
+                                            {
+                                                Console.WriteLine("Ha ocurrido un error");
+                                                Console.Read();
+                                            }
 
                                     break;
                                 case "3":
 
 
                                     Console.WriteLine("Escriba el codLlamada del cliente que quiere eliminar");
+                                            try
+                                            {
+                                                var id = Console.ReadLine();
 
-                                    var id = Console.ReadLine();
-
-                                    string url2 = $"https://localhost:7177/api/Llamadas?cod={id}";
-                                    var Client2 = new HttpClient();
-
-
-
+                                                string url2 = $"https://localhost:7177/api/Llamadas?cod={id}";
+                                                var Client2 = new HttpClient();
 
 
-                                    ///var data2 = JsonSerializer.Serialize<Cliente>(cliente2);
-                                    //HttpContent content2 = new StringContent(data2, System.Text.Encoding.UTF8, "application/json");
 
-                                    var httpResponse2 = await Client2.DeleteAsync(url2);
 
-                                    if (httpResponse2.IsSuccessStatusCode)
-                                    {
-                                        var result = await httpResponse2.Content.ReadAsStringAsync();
-                                        // var postResult = JsonSerializer.Deserialize<Post>(result);
-                                        Console.WriteLine("Llamada eliminada");
-                                        Console.ReadLine();
-                                    }
+                                                var httpResponse2 = await Client2.DeleteAsync(url2);
 
+                                                if (httpResponse2.IsSuccessStatusCode)
+                                                {
+                                                    var result = await httpResponse2.Content.ReadAsStringAsync();
+                                                    Console.WriteLine("Llamada eliminada");
+                                                    Console.ReadLine();
+                                                }
+                                            }
+                                            catch
+                                            {
+                                                Console.WriteLine("Ha ocurrido un error");
+                                                Console.Read();
+                                            }
 
                                     break;
 
@@ -386,21 +428,27 @@ namespace Practica2doParcial
                                     };
 
 
+                                            try
+                                            {
 
+                                                var data4 = JsonSerializer.Serialize<Llamada>(llamada2);
+                                                HttpContent content4 = new StringContent(data4, System.Text.Encoding.UTF8, "application/json");
 
-                                    var data4 = JsonSerializer.Serialize<Llamada>(llamada2);
-                                    HttpContent content4 = new StringContent(data4, System.Text.Encoding.UTF8, "application/json");
+                                                var httpResponse4 = await Client4.PutAsync(url4, content4);
 
-                                    var httpResponse4 = await Client4.PutAsync(url4, content4);
-
-                                    if (httpResponse4.IsSuccessStatusCode)
-                                    {
-                                        var result = await httpResponse4.Content.ReadAsStringAsync();
-                                        var postResult = JsonSerializer.Deserialize<Post>(result);
-                                        Console.WriteLine("Cliente Editado");
-                                        Console.ReadLine();
-                                    }
-
+                                                if (httpResponse4.IsSuccessStatusCode)
+                                                {
+                                                    var result = await httpResponse4.Content.ReadAsStringAsync();
+                                                    var postResult = JsonSerializer.Deserialize<Post>(result);
+                                                    Console.WriteLine("Cliente Editado");
+                                                    Console.ReadLine();
+                                                }
+                                            }
+                                            catch
+                                            {
+                                                Console.WriteLine("Ha ocurrido un error");
+                                                Console.Read();
+                                            }
 
 
                                     break;
@@ -442,8 +490,10 @@ namespace Practica2doParcial
                           );
                             opcion = Console.ReadLine();
                             switch (opcion)
-                            {
+                            { 
+
                                 case "1":
+                                            try { 
                                     string url = "https://localhost:7177/api/Planes";
                                     HttpClient Client = new HttpClient();
 
@@ -465,11 +515,16 @@ namespace Practica2doParcial
                                         Console.ReadLine();
                                     }
 
+                                            }catch
+                                            {
+                                                Console.WriteLine("Ha ocurrido un error,Revise la connecion con la api");
+                                                Console.Read();
+                                            }
 
-
-                                    break;
+                                            break;
 
                                 case "2":
+                                            try { 
                                     string url1 = "https://localhost:7177/api/Planes/Post";
                                     var Client1 = new HttpClient();
                                     var IdPlan = "";
@@ -486,7 +541,7 @@ namespace Practica2doParcial
                                     Console.WriteLine("escriba el costo por minuto");
                                     costo = Console.ReadLine();
                                     int cos = Int32.Parse(costo);
-
+                                            
                                     Plane planes = new Plane()
                                     {
 
@@ -497,7 +552,7 @@ namespace Practica2doParcial
 
 
                                     };
-
+                                            
 
 
 
@@ -513,14 +568,18 @@ namespace Practica2doParcial
                                         Console.WriteLine("Plan agregada");
                                         Console.ReadLine();
                                     }
-
+                                            } catch
+                                            {
+                                                Console.WriteLine("Ha ocurrido un error");
+                                                Console.Read();
+                                            }
 
                                     break;
                                 case "3":
 
 
                                     Console.WriteLine("Escriba el id del Plan que quiere eliminar");
-
+                                            try { 
                                     var id = Console.ReadLine();
 
                                     string url2 = $"https://localhost:7177/api/Planes?id={id}";
@@ -542,60 +601,74 @@ namespace Practica2doParcial
                                         Console.WriteLine("Plan eliminado");
                                         Console.ReadLine();
                                     }
+                                            }
+                                            catch
+                                            {
+                                                Console.WriteLine("Ha ocurrido un error, puede que el id plan no exista");
+                                                Console.Read();
 
+                                            }
 
                                     break;
 
 
                                 case "4":
-                                    string url4 = "https://localhost:7177/api/Planes/put";
-                                    var Client4 = new HttpClient();
-                                    var numero = "";
-                                    var numero1 = "";
 
-                                    Console.WriteLine("escriba el id del plan");
-                                  var  plan = Console.ReadLine();
-                                   
-                                    Console.WriteLine("escriba el nombre del plan");
-                                 var descripcion1 = Console.ReadLine();
+                                            try
+                                            {
+                                                string url4 = "https://localhost:7177/api/Planes/put";
+                                                var Client4 = new HttpClient();
+                                                var numero = "";
+                                                var numero1 = "";
 
+                                                Console.WriteLine("escriba el id del plan");
+                                                var plan = Console.ReadLine();
 
-                                    Console.WriteLine("escriba el precio de renta");
-                                    numero = Console.ReadLine();
-                                    int id1 = Int32.Parse(numero);
-
-                                    Console.WriteLine("escriba el costo por minuto");
-                                    numero1 = Console.ReadLine();
-                                    int id2 = Int32.Parse(numero1);
+                                                Console.WriteLine("escriba el nombre del plan");
+                                                var descripcion1 = Console.ReadLine();
 
 
-                                    Plane plane = new Plane()
-                                    {
-                                        IdPlan =plan ,
-                                        Descripcion = descripcion1,
-                                        Renta = id1, 
-                                        CostoMin = id2
+                                                Console.WriteLine("escriba el precio de renta");
+                                                numero = Console.ReadLine();
+                                                int id1 = Int32.Parse(numero);
+
+                                                Console.WriteLine("escriba el costo por minuto");
+                                                numero1 = Console.ReadLine();
+                                                int id2 = Int32.Parse(numero1);
 
 
-                                    };
+                                                Plane plane = new Plane()
+                                                {
+                                                    IdPlan = plan,
+                                                    Descripcion = descripcion1,
+                                                    Renta = id1,
+                                                    CostoMin = id2
+
+
+                                                };
 
 
 
 
-                                    var data4 = JsonSerializer.Serialize<Plane>(plane);
-                                    HttpContent content4 = new StringContent(data4, System.Text.Encoding.UTF8, "application/json");
+                                                var data4 = JsonSerializer.Serialize<Plane>(plane);
+                                                HttpContent content4 = new StringContent(data4, System.Text.Encoding.UTF8, "application/json");
 
-                                    var httpResponse4 = await Client4.PutAsync(url4, content4);
+                                                var httpResponse4 = await Client4.PutAsync(url4, content4);
 
-                                    if (httpResponse4.IsSuccessStatusCode)
-                                    {
-                                        var result = await httpResponse4.Content.ReadAsStringAsync();
-                                        var postResult = JsonSerializer.Deserialize<Post>(result);
-                                        Console.WriteLine("Plan Editado");
-                                        Console.ReadLine();
-                                    }
+                                                if (httpResponse4.IsSuccessStatusCode)
+                                                {
+                                                    var result = await httpResponse4.Content.ReadAsStringAsync();
+                                                    var postResult = JsonSerializer.Deserialize<Post>(result);
+                                                    Console.WriteLine("Plan Editado");
+                                                    Console.ReadLine();
+                                                }
 
-
+                                            }
+                                            catch
+                                            {
+                                                Console.WriteLine("Ha ocurrido un error");
+                                                Console.Read();
+                                            }
 
                                     break;
 
@@ -636,7 +709,8 @@ namespace Practica2doParcial
                             opcion = Console.ReadLine();
                             switch (opcion)
                             {
-                                case "1":
+                                case "1": 
+                                            try { 
                                     string url = "https://localhost:7177/api/Telefonoes";
                                     HttpClient Client = new HttpClient();
 
@@ -658,129 +732,161 @@ namespace Practica2doParcial
                                         Console.ReadLine();
                                     }
 
-
+                                            } catch
+                                            {
+                                                Console.WriteLine("Ha ocurrido un error");
+                                                Console.Read();
+                                            }
 
                                     break;
 
                                 case "2":
-                                    string url1 = "https://localhost:7177/api/Telefonoes/Post";
-                                    var Client1 = new HttpClient();
-                                    var idCliente = "";
-                                    Console.WriteLine("escriba id del Cliente");
-                                    idCliente = Console.ReadLine();
-                                    var Telefono = "";
-                                    Console.WriteLine("escriba el # de telefono que desea agragar");
-                                    Telefono = Console.ReadLine();
-                                    var tipoPlan = "";
-                                    Console.WriteLine("escriba el tipo del plan");
-                                    tipoPlan = Console.ReadLine();
-                                    int cos = Int32.Parse(idCliente);
+                                            try
+                                            {
+                                                string url1 = "https://localhost:7177/api/Telefonoes/Post";
+                                                var Client1 = new HttpClient();
+                                                var idCliente = "";
+                                                Console.WriteLine("escriba id del Cliente");
+                                                idCliente = Console.ReadLine();
+                                                var Telefono = "";
+                                                Console.WriteLine("escriba el # de telefono que desea agragar");
+                                                Telefono = Console.ReadLine();
+                                                var tipoPlan = "";
+                                                Console.WriteLine("escriba el tipo del plan");
+                                                tipoPlan = Console.ReadLine();
+                                                int cos = Int32.Parse(idCliente);
 
-                                    Telefono telefono = new Telefono()
-                                    {
+                                                Telefono telefono = new Telefono()
+                                                {
 
-                                      Telefono1 = Telefono,
-                                      IdCliente = cos,
-                                      TipoPlan = tipoPlan
-
-
-
-                                    };
+                                                    Telefono1 = Telefono,
+                                                    IdCliente = cos,
+                                                    TipoPlan = tipoPlan
 
 
 
+                                                };
 
-                                    var data1 = JsonSerializer.Serialize<Telefono>(telefono);
-                                    HttpContent content1 = new StringContent(data1, System.Text.Encoding.UTF8, "application/json");
 
-                                    var httpResponse1 = await Client1.PostAsync(url1, content1);
 
-                                    if (httpResponse1.IsSuccessStatusCode)
-                                    {
-                                        var result = await httpResponse1.Content.ReadAsStringAsync();
-                                        var postResult = JsonSerializer.Deserialize<Post>(result);
-                                        Console.WriteLine("Telefono agregado");
-                                        Console.ReadLine();
-                                    }
 
+                                                var data1 = JsonSerializer.Serialize<Telefono>(telefono);
+                                                HttpContent content1 = new StringContent(data1, System.Text.Encoding.UTF8, "application/json");
+
+                                                try
+                                                {
+                                                    var httpResponse1 = await Client1.PostAsync(url1, content1);
+
+                                                    ;
+                                                    if (httpResponse1.IsSuccessStatusCode)
+                                                    {
+                                                        var result = await httpResponse1.Content.ReadAsStringAsync();
+                                                        var postResult = JsonSerializer.Deserialize<Post>(result);
+                                                        Console.WriteLine("Telefono agregado");
+                                                        Console.ReadLine();
+                                                    }
+                                                }
+                                                catch
+                                                {
+                                                    Console.WriteLine("error detectado");
+                                                    Console.Read();
+                                                };
+                                            }
+                                            catch
+                                            {
+                                                Console.WriteLine("Ha ocurrido un error");
+                                                Console.Read();
+                                            }
 
                                     break;
                                 case "3":
 
 
                                     Console.WriteLine("Escriba el # de telefono que desea eliminar");
+                                            try
+                                            {
+                                                var id = Console.ReadLine();
 
-                                    var id = Console.ReadLine();
-
-                                    string url2 = $"https://localhost:7177/api/Telefonoes?numero={id}";
-                                    var Client2 = new HttpClient();
-
-
-
+                                                string url2 = $"https://localhost:7177/api/Telefonoes?numero={id}";
+                                                var Client2 = new HttpClient();
 
 
-                                    ///var data2 = JsonSerializer.Serialize<Cliente>(cliente2);
-                                    //HttpContent content2 = new StringContent(data2, System.Text.Encoding.UTF8, "application/json");
-
-                                    var httpResponse2 = await Client2.DeleteAsync(url2);
-
-                                    if (httpResponse2.IsSuccessStatusCode)
-                                    {
-                                        var result = await httpResponse2.Content.ReadAsStringAsync();
-                                        // var postResult = JsonSerializer.Deserialize<Post>(result);
-                                        Console.WriteLine("Telefono eliminado");
-                                        Console.ReadLine();
-                                    }
 
 
+
+                                                ///var data2 = JsonSerializer.Serialize<Cliente>(cliente2);
+                                                //HttpContent content2 = new StringContent(data2, System.Text.Encoding.UTF8, "application/json");
+
+                                                var httpResponse2 = await Client2.DeleteAsync(url2);
+
+                                                if (httpResponse2.IsSuccessStatusCode)
+                                                {
+                                                    var result = await httpResponse2.Content.ReadAsStringAsync();
+                                                    // var postResult = JsonSerializer.Deserialize<Post>(result);
+                                                    Console.WriteLine("Telefono eliminado");
+                                                    Console.ReadLine();
+                                                }
+
+                                            } catch
+                                            {
+                                                Console.WriteLine("Ha ocurrido un error");
+                                                Console.Read();
+                                            }
                                     break;
 
 
                                 case "4":
-                                    string url4 = "https://localhost:7177/api/Telefonoes/put";
-                                    var Client4 = new HttpClient();
-                                    var numero = "";
+                                            try
+                                            {
+                                                string url4 = "https://localhost:7177/api/Telefonoes/put";
+                                                var Client4 = new HttpClient();
+                                                var numero = "";
 
 
 
-                                    Console.WriteLine("escriba el id del cliente");
-                                    numero = Console.ReadLine();
-                                    int id1 = Int32.Parse(numero);
+                                                Console.WriteLine("escriba el id del cliente");
+                                                numero = Console.ReadLine();
+                                                int id1 = Int32.Parse(numero);
 
-                                    Console.WriteLine("escriba el # de telefono");
-                                    var telefono2 = Console.ReadLine();
-
-                              
-                                    Console.WriteLine("escriba tipo de plan");
-                                   var tipoplan1 = Console.ReadLine();
-                             
-                                  
-                                    Telefono telefono1 = new Telefono()
-                                    {
-                                        Telefono1 = telefono2,
-                                        IdCliente = id1,
-                                        TipoPlan= tipoplan1,
-
-                                    };
+                                                Console.WriteLine("escriba el # de telefono");
+                                                var telefono2 = Console.ReadLine();
 
 
+                                                Console.WriteLine("escriba tipo de plan");
+                                                var tipoplan1 = Console.ReadLine();
 
 
-                                    var data4 = JsonSerializer.Serialize<Telefono>(telefono1);
-                                    HttpContent content4 = new StringContent(data4, System.Text.Encoding.UTF8, "application/json");
+                                                Telefono telefono1 = new Telefono()
+                                                {
+                                                    Telefono1 = telefono2,
+                                                    IdCliente = id1,
+                                                    TipoPlan = tipoplan1,
 
-                                    var httpResponse4 = await Client4.PutAsync(url4, content4);
-
-                                    if (httpResponse4.IsSuccessStatusCode)
-                                    {
-                                        var result = await httpResponse4.Content.ReadAsStringAsync();
-                                        var postResult = JsonSerializer.Deserialize<Post>(result);
-                                        Console.WriteLine("Telefono Editado");
-                                        Console.ReadLine();
-                                    }
+                                                };
 
 
 
+
+                                                var data4 = JsonSerializer.Serialize<Telefono>(telefono1);
+                                                HttpContent content4 = new StringContent(data4, System.Text.Encoding.UTF8, "application/json");
+
+                                                var httpResponse4 = await Client4.PutAsync(url4, content4);
+
+                                                if (httpResponse4.IsSuccessStatusCode)
+                                                {
+                                                    var result = await httpResponse4.Content.ReadAsStringAsync();
+                                                    var postResult = JsonSerializer.Deserialize<Post>(result);
+                                                    Console.WriteLine("Telefono Editado");
+                                                    Console.ReadLine();
+                                                }
+
+
+                                            }
+                                            catch
+                                            {
+                                                Console.WriteLine("Ha ocurrido un error");
+                                                Console.Read();
+                                            }
                                     break;
 
 
@@ -875,36 +981,87 @@ namespace Practica2doParcial
 
 
                     case "6":
-                                Console.WriteLine("escriba el id del cliente");
-                                var id12 = Console.ReadLine();
-                                int id11 = Int32.Parse(id12);
 
-                                var a = from t in DB.Telefono
-                                        from l in DB.Llamadas
-                                        where t.Telefono1 == l.Telefono
-                                        where t.IdCliente == id11
-                                        select new
-                                        {
-                                           l.CodLlamada,
-                                           l.Telefono,
-                                           l.Fecha,
-                                           l.Duracion
-                                        };
-                                Console.WriteLine("\n");
-                                Console.WriteLine("CodLlamada          Telefono               Fecha              Duracion ");
-                                foreach (var x in a)
+                                 Console.WriteLine("escriba el id del cliente");
+                                try
                                 {
-                                    Console.WriteLine($"    {x.CodLlamada}            {x.Telefono}         {x.Fecha}         {x.Duracion}Min ");
+                                    var id12 = Console.ReadLine();
+                                    int id11 = Int32.Parse(id12);
+
+
+
+
+
+                                    var a = from t in DB.Telefono
+                                            from l in DB.Llamadas
+                                            where t.Telefono1 == l.Telefono
+                                            where t.IdCliente == id11
+
+                                            select new
+                                            {
+                                                l.CodLlamada,
+                                                l.Telefono,
+                                                l.Fecha,
+                                                l.Duracion
+                                            };
+
+                                    Console.WriteLine("\n");
+                                    Console.WriteLine("CodLlamada          Telefono               Fecha              Duracion ");
+                                    foreach (var x in a)
+                                    {
+                                       
+                                            Console.WriteLine($"    {x.CodLlamada}            {x.Telefono}         {x.Fecha}         {x.Duracion}Min ");
+
+                                    }
+                                    Console.Read();
                                 }
-                                Console.Read();
+                                catch
+                                {
+                                    Console.WriteLine("Ha ocurrido un error");
+                                    Console.Read();
+
+                                }
                                 break;
 
-                           
+
+                            case "7":
+
+                                var lineNumber = 0;
+                                using (SqlConnection conn = new SqlConnection(@"Server=DESKTOP-448GVJA;Database=telefonia; Integrated Security=true; Pooling = False"))
+                                {
+                                    conn.Open();
+                                   
+                                    using (StreamReader reader = new StreamReader(@"C:\Users\joanj\Desktop\Telefono.csv"))
+                                    {
+                                        while (!reader.EndOfStream)
+                                        {
+                                            var line = reader.ReadLine();
+                                            if (lineNumber != 0)
+                                            {
+                                                var values = line.Split(';');
+
+                                                var sql = "INSERT INTO Telefonia.dbo.Telefono VALUES ('" + values[0] + "','" + values[1] + "'," + values[2] + ")";
+
+                                                var cmd = new SqlCommand();
+                                                cmd.CommandText = sql;
+                                                cmd.CommandType = System.Data.CommandType.Text;
+                                                cmd.Connection = conn;
+                                                cmd.ExecuteNonQuery();
+                                            }
+                                            lineNumber++;
+                                        }
+                                    }
+                                    conn.Close();
+                                }
+                                Console.WriteLine("Telefono importado");
+                                Console.ReadLine();
 
 
+                                break;
 
-                    case "7":
-                        opcion = "7";
+
+                            case "8":
+                        opcion = "8";
                         break;
 
                     default:
@@ -912,7 +1069,7 @@ namespace Practica2doParcial
                         break;
                 }
 
-            } while (opcion != "7");
+            } while (opcion != "8");
 
 
 
