@@ -16,6 +16,8 @@ using System.Data;
 using System.Data.SqlClient;
 using static System.Net.WebRequestMethods;
 using System.Data.Common;
+using FluentValidation;
+using FluentValidation.Validators;
 
 namespace Practica2doParcial
 {
@@ -110,13 +112,38 @@ namespace Practica2doParcial
                                         var nombre = "";
                                         Console.WriteLine("escriba el nombre del cliente");
                                         nombre = Console.ReadLine();
-                                        var apellido = "";
+                                                while (nombre.Length > 20 || nombre == "" || nombre.Length <3)
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("escriba el nombre del cliente Correctamente");
+                                                    nombre = Console.ReadLine();
+                                                }
+
+                                                var apellido = "";
                                         Console.WriteLine("escriba el apellido del cliente");
                                         apellido = Console.ReadLine();
-                                        var fechaNacimiento = "";
-                                        Console.WriteLine("escriba la fecha de nacimiento de la siguiente forma yyy/mm/dd");
+
+                                                while (apellido.Length > 30 || apellido == "" || apellido.Length < 3)
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("escriba el apellido del cliente Correctamente");
+                                                    apellido = Console.ReadLine();
+                                                }
+
+
+                                                var fechaNacimiento = "";
+                                        Console.WriteLine("escriba la fecha de nacimiento de la siguiente forma yyyy/mm/dd");
                                         fechaNacimiento = Console.ReadLine();
-                                        Cliente cliente = new Cliente()
+                                                while (fechaNacimiento.Length < 10 || fechaNacimiento == "" || fechaNacimiento.Length > 10)
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("escriba el fecha de nacimiento del cliente Correctamente yyy/mm/dd");
+                                                    fechaNacimiento = Console.ReadLine();
+                                                }
+
+
+
+                                                Cliente cliente = new Cliente()
                                         {
 
                                             Nombre = nombre,
@@ -194,16 +221,56 @@ namespace Practica2doParcial
                                         Console.WriteLine("escriba el id del cliente");
                                         numero = Console.ReadLine();
                                         int id1 = Int32.Parse(numero);
-                                        var nombre4 = "";
-                                        Console.WriteLine("escriba el telefono del cliente");
+
+                                                while (id1 < 1000 )
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("escriba el id del cliente");
+                                                    numero = Console.ReadLine();
+                                                     id1 = Int32.Parse(numero);
+                                                }
+
+
+
+
+                                                Console.WriteLine("escriba el nombre del cliente");
                                         nombre = Console.ReadLine();
-                                        var apellido4 = "";
+
+                                                while (nombre.Length > 20 || nombre == "" || nombre.Length < 3)
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("escriba el nombre del cliente Correctamente");
+                                                    nombre = Console.ReadLine();
+                                                }
+
+
+
                                         Console.WriteLine("escriba el apellido del cliente");
                                         apellido = Console.ReadLine();
-                                        var fechaNacimiento4 = "";
-                                        Console.WriteLine("escriba la fecha de nacimiento de la siguiente forma yyy/mm/dd");
+
+
+
+                                                while (apellido.Length > 30 || apellido == "" || apellido.Length < 3)
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("escriba el apellido del cliente Correctamente");
+                                                    apellido = Console.ReadLine();
+                                                }
+
+
+                                                Console.WriteLine("escriba la fecha de nacimiento de la siguiente forma yyyy/mm/dd");
                                         fechaNacimiento = Console.ReadLine();
-                                        Cliente cliente4 = new Cliente()
+
+                                                while (fechaNacimiento.Length < 10 || fechaNacimiento == "" || fechaNacimiento.Length > 10)
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("escriba el fecha de nacimiento del cliente Correctamente yyyy/mm/dd");
+                                                    fechaNacimiento = Console.ReadLine();
+                                                }
+
+
+
+                                                Cliente cliente4 = new Cliente()
                                         {
                                             IdCliente = id1,
                                             Nombre = nombre,
@@ -321,14 +388,37 @@ namespace Practica2doParcial
                                     var telefono = "";
                                     Console.WriteLine("escriba el # de telefono");
                                     telefono = Console.ReadLine();
-                                    var duracion = "";
+                                            while (telefono.Length < 10 || telefono.Length > 10)
+                                            {
+                                                Console.Clear();
+                                                Console.WriteLine("escriba el # de telefono Correctamente");
+                                                telefono = Console.ReadLine();
+                                            }
+
+                                            var duracion = "";
                                     var fecha = "";
-                                    Console.WriteLine("escriba la fecha de la llamada de la sigiente forma  May 24 2019 12:00AM");
+                                    Console.WriteLine("escriba la fecha de la llamada de la sigiente forma  May 24 2019 12:00AM Correctamente");
                                     fecha = Console.ReadLine();
-                                    Console.WriteLine("escriba la duracion de la llamada en minutos");
+                                            while (fecha.Length < 11)
+                                            {
+                                                Console.Clear();
+                                                Console.WriteLine("escriba la fecha de la llamada de la sigiente forma  May 24 2019 12:00AM Correctamente");
+                                                fecha = Console.ReadLine();
+                                            }
+
+                                            Console.WriteLine("escriba la duracion de la llamada en minutos");
+
+
                                     duracion = Console.ReadLine();
-                                    int du = Int32.Parse(duracion);
-                                    Llamada llamada = new Llamada()
+                                            int du = 0;
+                                       
+                                         
+                                                Console.WriteLine("escriba la duracion de la llamada en minutos");
+                                                duracion = Console.ReadLine();
+                                              
+                                            du = Int32.Parse(duracion);
+
+                                            Llamada llamada = new Llamada()
                                     {
                                         
                                         Telefono = telefono,
@@ -407,13 +497,29 @@ namespace Practica2doParcial
                                   
                                     Console.WriteLine("escriba el telefono");
                                    var telefono1 = Console.ReadLine();
-                                 
-                                    Console.WriteLine("escriba la fecha de la llamada");
-                                   var apellido = Console.ReadLine();
-                                
-                  
 
-                                    Console.WriteLine("escriba la duracion de la llamada");
+                                            while (telefono1.Length < 10 || telefono1.Length > 10)
+                                            {
+                                                Console.WriteLine("escriba el telefono Correctamente");
+                                                telefono1 = Console.ReadLine();
+                                            }
+
+                                            Console.WriteLine("escriba la fecha de la llamada Correctamente May 24 2019 12:00AM");
+                                   var apellido = Console.ReadLine();
+
+                                            while (apellido.Length < 11)
+                                            {
+                                                Console.Clear();
+                                                Console.WriteLine("escriba la fecha de la llamada de la sigiente forma  May 24 2019 12:00AM Correctamente");
+                                                apellido = Console.ReadLine();
+                                            }
+
+
+
+
+
+
+                                    Console.WriteLine("escriba la duracion de la llamada en minutos");
                                     numero1 = Console.ReadLine();
                                     int id2 = Int32.Parse(numero1);
 
@@ -530,13 +636,24 @@ namespace Practica2doParcial
                                     var IdPlan = "";
                                     Console.WriteLine("escriba id del plan");
                                     IdPlan = Console.ReadLine();
-                                    var Renta = "";
+                                      while (IdPlan.Length >1 || IdPlan=="0")
+                                             {
+                                                    Console.Clear();
+                                                    Console.WriteLine("escriba id del plan Correctamente");
+                                                    IdPlan = Console.ReadLine();
+                                                }
+
+                                     var Renta = "";
                                     var costo = "";
                                     var descripcion = "";
-                                    Console.WriteLine("escriba el telefono del plan");
+                                    Console.WriteLine("escriba el nombre del plan");
                                     descripcion = Console.ReadLine();
+
+
                                     Console.WriteLine("escriba el precio de renta");
                                     Renta = Console.ReadLine();
+
+
                                     int re = Int32.Parse(Renta);
                                     Console.WriteLine("escriba el costo por minuto");
                                     costo = Console.ReadLine();
@@ -623,6 +740,12 @@ namespace Practica2doParcial
 
                                                 Console.WriteLine("escriba el id del plan");
                                                 var plan = Console.ReadLine();
+                                                while (plan.Length > 1 || plan == "0")
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("escriba id del plan Correctamente");
+                                                    plan = Console.ReadLine();
+                                                }
 
                                                 Console.WriteLine("escriba el nombre del plan");
                                                 var descripcion1 = Console.ReadLine();
@@ -745,16 +868,46 @@ namespace Practica2doParcial
                                             {
                                                 string url1 = "https://localhost:7177/api/Telefonoes/Post";
                                                 var Client1 = new HttpClient();
+                                                
                                                 var idCliente = "";
                                                 Console.WriteLine("escriba id del Cliente");
                                                 idCliente = Console.ReadLine();
+                                                int cos = Int32.Parse(idCliente);
+                                                while (cos < 1000)
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("escriba id Cliente correctamente");
+                                                    idCliente = Console.ReadLine();
+                                                    cos = Int32.Parse(idCliente);
+                                                }
+
+
+
                                                 var Telefono = "";
                                                 Console.WriteLine("escriba el # de telefono que desea agragar");
                                                 Telefono = Console.ReadLine();
+
+                                                while (Telefono.Length < 10 || Telefono.Length > 10)
+                                                {
+                                                    Console.Clear();
+                                                Console.WriteLine("escriba el # de telefono correctamente");
+                                                Telefono = Console.ReadLine();
+                                            }
+
                                                 var tipoPlan = "";
                                                 Console.WriteLine("escriba el tipo del plan");
                                                 tipoPlan = Console.ReadLine();
-                                                int cos = Int32.Parse(idCliente);
+                                                while (tipoPlan == "0" || tipoPlan.Length > 1 || tipoPlan == " ")
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("escriba el tipo de plan correctamente");
+                                                    tipoPlan = Console.ReadLine();
+                                                }
+
+
+
+
+
 
                                                 Telefono telefono = new Telefono()
                                                 {
@@ -763,7 +916,7 @@ namespace Practica2doParcial
                                                     IdCliente = cos,
                                                     TipoPlan = tipoPlan
 
-
+                                                    
 
                                                 };
 
@@ -807,6 +960,13 @@ namespace Practica2doParcial
                                             {
                                                 var id = Console.ReadLine();
 
+                                                while (id.Length < 10)
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("escriba el # de telefono correctamente");
+                                                    id = Console.ReadLine();
+                                                }
+
                                                 string url2 = $"https://localhost:7177/api/Telefonoes?numero={id}";
                                                 var Client2 = new HttpClient();
 
@@ -847,13 +1007,42 @@ namespace Practica2doParcial
                                                 Console.WriteLine("escriba el id del cliente");
                                                 numero = Console.ReadLine();
                                                 int id1 = Int32.Parse(numero);
+                                                while (id1 < 1000)
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("escriba id Cliente correctamente");
+                                                    numero = Console.ReadLine();
+                                                    id1 = Int32.Parse(numero);
+                                                }
+
 
                                                 Console.WriteLine("escriba el # de telefono");
                                                 var telefono2 = Console.ReadLine();
 
+                                                while (telefono2.Length < 10 || telefono2.Length > 10)
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("escriba id Cliente correctamente");
+                                                    telefono2 = Console.ReadLine();
+
+
+                                                }
+
+
 
                                                 Console.WriteLine("escriba tipo de plan");
                                                 var tipoplan1 = Console.ReadLine();
+
+                                                while (tipoplan1.Length > 1 || tipoplan1 == "0" || tipoplan1 == "")
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("escriba id Cliente correctamente");
+                                                    tipoplan1 = Console.ReadLine();
+
+
+                                                }
+
+
 
 
                                                 Telefono telefono1 = new Telefono()
@@ -1269,20 +1458,6 @@ namespace Practica2doParcial
             return file;
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         private static string GetConnectionsString()
         {
             return @"Server=DESKTOP-448GVJA;Database=telefonia; Integrated Security=true; Pooling = False";
@@ -1291,6 +1466,10 @@ namespace Practica2doParcial
 
 
         }
+
+
+       
+        
 
 
 

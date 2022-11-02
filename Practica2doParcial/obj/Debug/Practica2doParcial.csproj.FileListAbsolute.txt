@@ -97,3 +97,5 @@ C:\Users\joanj\source\repos\Practica2doParcial\Practica2doParcial\bin\Debug\pt-B
 C:\Users\joanj\source\repos\Practica2doParcial\Practica2doParcial\bin\Debug\ru\Microsoft.Data.SqlClient.resources.dll
 C:\Users\joanj\source\repos\Practica2doParcial\Practica2doParcial\bin\Debug\zh-Hans\Microsoft.Data.SqlClient.resources.dll
 C:\Users\joanj\source\repos\Practica2doParcial\Practica2doParcial\bin\Debug\zh-Hant\Microsoft.Data.SqlClient.resources.dll
+C:\Users\joanj\source\repos\Practica2doParcial\Practica2doParcial\bin\Debug\FluentValidation.dll
+C:\Users\joanj\source\repos\Practica2doParcial\Practica2doParcial\bin\Debug\FluentValidation.xml
